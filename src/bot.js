@@ -30,7 +30,7 @@ bot.onText(/\/register/, async (message) => {
   bot.sendMessage(message.chat.id, answer);
 });
 
-bot.onText(/\/stat/, async (message) => {
+bot.onText(/\/statistics/, async (message) => {
   const placesLeft = amount - await controllers.countPartcipants();
   const usernames = await controllers.getParticipantsUsernames();
   const answer = helpers.buildList(placesLeft, usernames);
