@@ -1,6 +1,8 @@
 const TelegramBot = require("node-telegram-bot-api");
 
 const controllers = require("./database/controllers");
+const helpers = require("./helpers");
+const text = require("./text");
 
 const token = process.env.TELEGRAM_TOKEN;
 const amount = process.env.PARTICIPANTS_AMOUNT;
@@ -8,7 +10,11 @@ const amount = process.env.PARTICIPANTS_AMOUNT;
 const bot = new TelegramBot(token, { polling: true });
 
 bot.onText(/\/start/, (message) => {
-  bot.sendMessage(message.chat.id, "🎅 Хо-хо-хо! Меня зовут Техно-Санта, я создан для того, чтобы помогать ребятишкам вроде тебя дарить друг другу подарки.\n\nВведи команду /register чтобы начать.");
+  bot.sendMessage(message.chat.id, text.start);
+});
+
+bot.onText(/\/help/, (message) => {
+  bot.sendMessage(message.chat.id, text.help);
 });
 
 bot.onText(/\/register/, async (message) => {
@@ -18,9 +24,15 @@ bot.onText(/\/register/, async (message) => {
     id: message.from.id
   };
   const isSuccess = await controllers.registerPartcipant(user);
-  console.log(isSuccess);
   const answer = isSuccess
-    ? `\t🦌 Поздравляю, теперь ты в команде! Начинай готовить подарки, ведь вечеринка уже не за горами.\n\n❄️ Мои эльфы-помощники уже настраивают систему жеребьевки, совсем скоро каждый из нас получит своего Тайного Санту...` 
-    : `\t🎁 Не стоит регистрироваться дважды, мой шаловливый друг! Помни, что в таком случае тебе придется дарить сразу два подарка!`;
+    ? text.registerSuccess
+    : text.registerFailure;
+  bot.sendMessage(message.chat.id, answer);
+});
+
+bot.onText(/\/stat/, async (message) => {
+  const placesLeft = amount - await controllers.countPartcipants();
+  const usernames = await controllers.getParticipantsUsernames();
+  const answer = helpers.buildList(placesLeft, usernames);
   bot.sendMessage(message.chat.id, answer);
 });
