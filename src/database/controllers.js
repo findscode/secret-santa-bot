@@ -32,4 +32,16 @@ module.exports.startShuffle = async () => {
   helpers.shuffle(donors).forEach(pair => {
     new Pairs(pair).save().then(null, error => console.log(`Shuffle error: ${error.code}`)).catch(console.log);
   });
-}
+};
+
+module.exports.getRecepient = async (donorUsername) => {
+  let recepient;
+  await Pairs.findOne({
+    "donor.username": donorUsername
+  }, (error, pair) => {
+    if (!error) {
+      recepient = pair.recepient;
+    }
+  });
+  return recepient;
+};

@@ -55,3 +55,8 @@ bot.onText(/\/shuffle/, (message) => {
 bot.onText(/\/gift/, (message) => {
   bot.sendMessage(message.chat.id, text.gift);
 });
+
+bot.onText(/\/test/, async (message) => {
+  const recepient = await controllers.getRecepient(message.from.username);
+  bot.sendMessage(message.chat.id, `💥 Жеребьевка проведена! Вот информация о человеке, который получит от тебя подарок:\n\n🏂 Имя аккаунта в Telegram: ${recepient.name}\n🎉 Аккаунт: @${recepient.username}`);
+});
