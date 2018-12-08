@@ -7,7 +7,13 @@ const text = require("./text");
 const token = process.env.TELEGRAM_TOKEN;
 const amount = process.env.PARTICIPANTS_AMOUNT;
 
-const bot = new TelegramBot(token, { polling: true });
+let bot;
+if (process.env.NODE_ENV === "production") {
+  bot = new TelegramBot(token);
+  bot.setWebHook(process.env.HEROKU_URL + bot.token);
+} else {
+  bot = new TelegramBot(token, { polling: true });
+}
 
 bot.onText(/\/start/, (message) => {
   bot.sendMessage(message.chat.id, text.start);
@@ -52,13 +58,14 @@ bot.onText(/\/shuffle/, (message) => {
   );
 });
 
-bot.onText(/\/gift/, (message) => {
-  bot.sendMessage(message.chat.id, text.gift);
-});
-
-bot.onText(/\/test/, async (message) => {
+bot.onText(/\/gift/, async (message) => {
   const recepient = await controllers.getRecepient(message.from.username);
   if (recepient) {
     bot.sendMessage(message.chat.id, `💥 Жеребьевка проведена! Вот информация о человеке, который получит от тебя подарок:\n\n🏂 Имя аккаунта в Telegram: ${recepient.name}\n🎉 Аккаунт: @${recepient.username}`);
+  } else {
+    bot.sendMessage(message.chat.id, text.gift);
   }
 });
+
+
+module.exports = bot;
