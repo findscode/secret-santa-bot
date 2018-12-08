@@ -39,7 +39,7 @@ module.exports.getRecepient = async (donorUsername) => {
   await Pairs.findOne({
     "donor.username": donorUsername
   }, (error, pair) => {
-    if (!error) {
+    if (!error && pair) {
       recepient = pair.recepient;
     }
   });
