@@ -36,3 +36,22 @@ bot.onText(/\/statistics/, async (message) => {
   const answer = helpers.buildList(placesLeft, usernames);
   bot.sendMessage(message.chat.id, answer);
 });
+
+bot.onText(/\/shuffle/, (message) => {
+  return bot.sendMessage(message.chat.id, "Введи пароль для старта жеребьевки")
+    .then(() => bot.on("message", (message) => {
+      const isValid = message.text === process.env.SHUFFLE_PASSWORD;
+      const answer = isValid ? "Пароль принят." : "Пароль отклонен.";
+      return bot.sendMessage(message.chat.id, answer).then(async () => {
+        if (isValid) {
+          await controllers.startShuffle();
+          return bot.sendMessage(message.chat.id, "Жеребьевка проведена. Введи команду /gift чтобы узнать информацию о человеке, которому ты будешь приходиться Тайным Сантой.");
+        }
+      });
+    })
+  );
+});
+
+bot.onText(/\/gift/, (message) => {
+  bot.sendMessage(message.chat.id, text.gift);
+});
