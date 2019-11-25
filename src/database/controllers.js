@@ -9,7 +9,7 @@ module.exports.registerPartcipant = (user) => {
 };
 
 module.exports.countPartcipants = () => {
-  return Participants.count({}, (amount) => amount);
+  return Participants.countDocuments({}, (amount) => amount);
 };
 
 module.exports.getParticipantsUsernames = async () => {
