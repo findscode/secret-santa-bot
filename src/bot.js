@@ -5,9 +5,9 @@ const helpers = require("./helpers");
 const text = require("./text");
 
 const token = process.env.TELEGRAM_TOKEN;
-const amount = process.env.PARTICIPANTS_AMOUNT;
 
 let bot;
+
 if (process.env.NODE_ENV === "production") {
   bot = new TelegramBot(token);
   bot.setWebHook(process.env.HEROKU_URL + bot.token);
@@ -30,40 +30,37 @@ bot.command("register", async context => {
     id: context.from.id
   };
   const isSuccess = await controllers.registerPartcipant(user);
-  const answer = isSuccess
-    ? text.registerSuccess
-    : text.registerFailure;
+  const answer = isSuccess ? text.registerSuccess : text.registerFailure;
+  
   bot.telegram.sendMessage(context.chat.id, answer);
 });
 
 bot.command("statistics", async context => {
-  const placesLeft = amount - await controllers.countPartcipants();
+  const amount = await controllers.countPartcipants();
   const usernames = await controllers.getParticipantsUsernames();
-  const answer = helpers.buildList(placesLeft, usernames);
+  const answer = helpers.buildList(amount, usernames);
 
   bot.telegram.sendMessage(context.chat.id, answer);
 });
 
 bot.command("shuffle", async context => {
   const isValid = context.from.username === process.env.ADMIN_USERNAME;
+  const answer = isValid ? text.shuffleInProgress : text.shuffleNotAllowed;
 
   if (isValid) {
     await controllers.startShuffle();
-    context.reply(text.shuffleInProgress);
-  } 
+  }
+  
+  context.reply(answer);
 });
 
 bot.command("gift", async context => {
   const recepient = await controllers.getRecepient(context.from.username);
+  const answer = recepient ? text.recepientAvailable(recepient) : text.recepientNotAvailable;
 
-  if (recepient) {
-    bot.telegram.sendMessage(context.chat.id, text.recepientAvailable);
-  } else {
-    bot.telegram.sendMessage(context.chat.id, text.recepientNotAvailable);
-  }
+  context.reply(answer);
 });
 
 bot.launch();
-
 
 module.exports = bot;
