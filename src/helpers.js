@@ -5,9 +5,10 @@ module.exports.buildList = (amount, usernames) => {
 
 const random = array => array[Math.floor(Math.random() * array.length)];
 
-module.exports.shuffle = (donors) => {
-  const pairs = []
-  if (donors) {
+module.exports.shuffle = donors => {
+  const pairs = [];
+
+  if (donors && donors.length > 1) {
     let recepients = donors;
     
     donors.forEach(donor => {
@@ -24,5 +25,6 @@ module.exports.shuffle = (donors) => {
         });
     });
   }
+
   return pairs;
 }    

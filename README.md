@@ -44,7 +44,7 @@ ADMIN_USERNAME =
 
 ### Launching
 
-To run client & server on localhost type `npm start` in a root folder.
+To run the bot on the localhost type `npm start` in a root folder.
 
 ```
 $ npm start

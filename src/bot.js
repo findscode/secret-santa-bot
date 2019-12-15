@@ -6,7 +6,7 @@ const text = require("./text");
 
 const token = process.env.TELEGRAM_TOKEN;
 
-const bot = new TelegramBot(token);
+const bot = new TelegramBot(token, { polling: true });
 
 bot.command("start", context => {
   bot.telegram.sendMessage(context.chat.id, text.start);
