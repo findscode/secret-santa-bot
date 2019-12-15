@@ -55,7 +55,6 @@ $ npm start
 - [Node.js](https://github.com/nodejs/node) - JavaScript runtime for server;
 - [npm](https://github.com/npm/npm) - Package manager for JavaScript;
 - [Telegraf.js](https://github.com/telegraf/telegraf) - Modern Telegram bot framework for Node.js;
-- [Express.js](https://github.com/expressjs/express) - Framework for Node.js;
 - [MongoDB](https://www.mongodb.com/) - NoSQL Database;
 - [Mongoose](http://mongoosejs.com/) - ODM for MongoDB.
 

@@ -6,14 +6,7 @@ const text = require("./text");
 
 const token = process.env.TELEGRAM_TOKEN;
 
-let bot;
-
-if (process.env.NODE_ENV === "production") {
-  bot = new TelegramBot(token);
-  bot.setWebHook(process.env.HEROKU_URL + bot.token);
-} else {
-  bot = new TelegramBot(token, { polling: true });
-}
+const bot = new TelegramBot(token);
 
 bot.command("start", context => {
   bot.telegram.sendMessage(context.chat.id, text.start);
@@ -61,6 +54,13 @@ bot.command("gift", async context => {
   context.reply(answer);
 });
 
-bot.launch();
-
-module.exports = bot;
+if (process.env.NODE_ENV === "development") {
+  bot.launch();
+} else {
+  bot.launch({
+    webhook: {
+      domain: process.env.HEROKU_URL + token,
+      port: process.env.PORT
+    }
+  });
+}
